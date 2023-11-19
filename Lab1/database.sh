@@ -4,7 +4,8 @@ echo 'Creating VM for the database...'
 
 az vm create --name petclinic-db --resource-group WUS \
     --admin-username azureuser --generate-ssh-keys \
-    --image Ubuntu2204
+    --image Ubuntu2204 --public-ip-address "" \
+    --vnet-name petclinic-vnet --subnet petclinic-subnet --private-ip-address 10.0.0.6
 
 echo 'Done.'
 

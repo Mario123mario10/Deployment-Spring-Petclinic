@@ -7,7 +7,8 @@ echo 'Creating VM for front-end...'
 az group create -l uksouth -n WUS
 az vm create --name petclinic-frontend --resource-group WUS \
     --admin-username azureuser --generate-ssh-keys \
-    --image Ubuntu2204 --public-ip-sku Standard
+    --image Ubuntu2204 --public-ip-sku Standard \
+    --vnet-name petclinic-vnet --subnet petclinic-subnet --private-ip-address 10.0.0.4
 
 echo 'Done.'
 

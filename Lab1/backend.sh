@@ -6,7 +6,8 @@ echo 'Creating VM for back-end...'
 
 az vm create --name petclinic-backend --resource-group WUS \
     --admin-username azureuser --generate-ssh-keys \
-    --image Ubuntu2204
+    --image Ubuntu2204 --public-ip-address "" --vnet-name petclinic-vnet \
+    --subnet petclinic-subnet --private-ip-address 10.0.0.5
 
 echo 'Done.'
 
