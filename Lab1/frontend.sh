@@ -46,7 +46,7 @@ echo 'Installing project packages and launching the app...'
 az vm run-command invoke  --command-id RunShellScript --name petclinic-frontend -g WUS  \
     --scripts 'npm uninstall -g angular-cli @angular/cli' \
     'npm install -g @angular/cli@latest' \
-    'git clone https://github.com/spring-petclinic/spring-petclinic-angular.git' \
+    'git clone https://github.com/bkisly/spring-petclinic-angular.git' \
     'cd spring-petclinic-angular/' \
     'npm install --save-dev @angular/cli@latest --force' \
     'rm package-lock.json' \

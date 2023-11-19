@@ -45,7 +45,7 @@ echo 'Done.'
 echo 'Running project...'
 
 az vm run-command invoke  --command-id RunShellScript --name petclinic-backend -g WUS  \
-    --scripts 'git clone https://github.com/spring-petclinic/spring-petclinic-rest' \
+    --scripts 'git clone https://github.com/bkisly/spring-petclinic-rest' \
     'cd spring-petclinic-rest/' \
     'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/' \
     './mvnw spring-boot:run &' \
