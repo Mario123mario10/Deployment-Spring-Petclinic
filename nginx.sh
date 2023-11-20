@@ -13,6 +13,7 @@ http {
     upstream backend_servers {
         server 10.0.0.5:8080;
         server 10.0.0.8:8080;
+        server 10.0.0.3:8080;
     }
 
     server {

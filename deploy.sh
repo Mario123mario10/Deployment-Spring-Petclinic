@@ -44,12 +44,12 @@ create_vm() {
 }
 
 # Tworzenie maszyn wirtualnych dla bazy danych master i slave
-create_vm "petclinic-db-master" "10.0.0.6"
-create_vm "petclinic-db-slave" "10.0.0.7"
+create_vm "petclinic-db" "10.0.0.6"
 
 # Tworzenie maszyn wirtualnych dla backendu
 create_vm "petclinic-backend-1" "10.0.0.5"
 create_vm "petclinic-backend-2" "10.0.0.8"
+create_vm "petclinic-backend-2" "10.0.0.3"
 
 # Tworzenie maszyny wirtualnej dla NGINX Load Balancer
 create_vm "petclinic-nginx-lb" "10.0.0.9"
@@ -61,16 +61,10 @@ create_vm "petclinic-frontend" "10.0.0.4"
 
 az vm run-command invoke \
                     --resource-group $resourceGroup \
-                    --name "petclinic-db-master" \
+                    --name "petclinic-db" \
                     --command-id RunShellScript \
-                    --scripts "@./sql-master.sh" 
+                    --scripts "@./database" 
 
-
-az vm run-command invoke \
-                    --resource-group $resourceGroup \
-                    --name "petclinic-db-slave" \
-                    --command-id RunShellScript \
-                    --scripts "@./sql-slave.sh" 
 
 # Konfiguracja backendu
 # (dodaj tu odpowiednie skrypty konfiguracyjne dla Spring Boot)
@@ -87,6 +81,12 @@ az vm run-command invoke \
                     --name "petclinic-backend-2" \
                     --command-id RunShellScript \
                     --scripts "@./petclinic-backend-2.sh"			
+
+                    az vm run-command invoke \
+                    --resource-group $resourceGroup \
+                    --name "petclinic-backend-3" \
+                    --command-id RunShellScript \
+                    --scripts "@./petclinic-backend-3.sh"		
 
 # Konfiguracja NGINX Load Balancer
 
