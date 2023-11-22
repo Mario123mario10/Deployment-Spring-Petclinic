@@ -1,5 +1,9 @@
 #!/bin/sh
 
+FRONTEND_PORT="$1"
+BACKEND_PORT="$2"
+DB_PORT="$3"
+
 # CREATE RESOURCE GROUP
 
 echo 'Creating resource group for the infrastructure...'
@@ -28,29 +32,19 @@ az vm create --name petclinic-db --resource-group WUS \
 
 echo 'Done.'
 
-echo 'Opening HTTP(S) ports for the VM...'
+echo 'Opening ports for the database VM...'
 
 az vm open-port \
     --resource-group WUS \
     --name petclinic-db  \
-    --port 80 --priority 1011
-
-az vm open-port \
-    --resource-group WUS \
-    --name petclinic-db  \
-    --port 443 --priority 1010
-
-az vm open-port \
-    --resource-group WUS \
-    --name petclinic-db  \
-    --port 3306 --priority 1012
+    --port $DB_PORT --priority 1010
 
 echo 'Done.'
 
 echo 'Installing database...'
 
 az vm run-command invoke  --command-id RunShellScript --name petclinic-db -g WUS  \
-    --script '@./src/database.sh'
+    --script '@./src/database.sh' --parameters $DB_PORT
 
 echo 'Done.'
 
@@ -65,29 +59,19 @@ az vm create --name petclinic-backend --resource-group WUS \
 
 echo 'Done.'
 
-echo 'Opening HTTP(S) ports for the VM...'
+echo 'Opening ports for the backend VM...'
 
 az vm open-port \
     --resource-group WUS \
     --name petclinic-backend  \
-    --port 80 --priority 1011
-
-az vm open-port \
-    --resource-group WUS \
-    --name petclinic-backend  \
-    --port 443 --priority 1010
-
-az vm open-port \
-    --resource-group WUS \
-    --name petclinic-backend  \
-    --port 9966 --priority 1012
+    --port $BACKEND_PORT --priority 1012
 
 echo 'Done.'
 
 echo 'Installing project...'
 
 az vm run-command invoke  --command-id RunShellScript --name petclinic-backend -g WUS  \
-    --script '@./src/backend.sh'
+    --script '@./src/backend.sh' --parameters $BACKEND_PORT $DB_PORT
 
 echo 'Done.'
 
@@ -102,23 +86,18 @@ az vm create --name petclinic-frontend --resource-group WUS \
 
 echo 'Done.'
 
-echo 'Opening HTTP(S) ports for the VM...'
+echo 'Opening ports for the frontend VM...'
 
 az vm open-port \
     --resource-group WUS \
     --name petclinic-frontend  \
-    --port 80 --priority 1011
-
-az vm open-port \
-    --resource-group WUS \
-    --name petclinic-frontend  \
-    --port 443 --priority 1010
+    --port $FRONTEND_PORT --priority 1011
 
 echo 'Done.'
 
 echo 'Installing project...'
 
 az vm run-command invoke  --command-id RunShellScript --name petclinic-frontend -g WUS  \
-    --script '@./src/frontend.sh' --parameters $(az vm show -g WUS -n petclinic-backend -d --query [publicIps] --output tsv)
+    --script '@./src/frontend.sh' --parameters $(az vm show -g WUS -n petclinic-backend -d --query [publicIps] --output tsv) $FRONTEND_PORT $BACKEND_PORT
 
 echo 'Done.'

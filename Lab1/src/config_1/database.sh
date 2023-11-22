@@ -7,6 +7,8 @@ CONFIG_FILE="/etc/mysql/mysql.conf.d/mysqld.cnf"
 INIT_DATABASE="https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-rest/master/src/main/resources/db/mysql/initDB.sql"
 POPULATE_DATABASE="https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-rest/master/src/main/resources/db/mysql/populateDB.sql"
 
+DATABASE_PORT="$1"
+
 cd ~/
 
 sudo apt update
