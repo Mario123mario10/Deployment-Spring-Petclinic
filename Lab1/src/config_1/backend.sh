@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DB_ADDRESS=10.0.0.6
+DB_ADDRESS=10.0.0.8
 DB_USER=admin
 DB_PASSWORD=admin
 
