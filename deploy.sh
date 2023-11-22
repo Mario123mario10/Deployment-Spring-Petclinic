@@ -1,16 +1,7 @@
-az mysql flexible-server create \
-    --resource-group WUS3 \
-    --name petclinic-db \
-    --database-name db1 \
-    --admin-user azureuser \
-    --admin-password '<admin-password>'
-
-
-
 #!/bin/sh
 
 # Ustawienia ogólne
-resourceGroup="WUS"
+resourceGroup="WUS3"
 vnetName="petclinic-vnet"
 subnetName="petclinic-subnet"
 location="uksouth"
@@ -34,6 +25,7 @@ echo 'Done.'
 create_vm() {
     vmName=$1
     privateIpAddress=$2
+
     echo "Creating VM: $vmName with IP: $privateIpAddress..."
     az vm create --name $vmName --resource-group $resourceGroup \
         --admin-username azureuser --generate-ssh-keys \
@@ -43,20 +35,51 @@ create_vm() {
     echo 'Done.'
 }
 
-# Tworzenie maszyn wirtualnych dla bazy danych master i slave
-create_vm "petclinic-db-master" "10.0.0.6"
-create_vm "petclinic-db-slave" "10.0.0.7"
+create_vm_public() {
+    vmName=$1
+    privateIpAddress=$2
+    
+    echo "Creating VM: $vmName with IP: $privateIpAddress..."
+    az vm create --name $vmName --resource-group $resourceGroup \
+        --admin-username azureuser --generate-ssh-keys \
+        --image Ubuntu2204 --public-ip-sku Standard \
+        --vnet-name $vnetName --subnet $subnetName \
+        --private-ip-address $privateIpAddress
+    echo 'Done.'
+}
 
-# Tworzenie maszyn wirtualnych dla backendu
-create_vm "petclinic-backend-1" "10.0.0.5"
-create_vm "petclinic-backend-2" "10.0.0.8"
-
-# Tworzenie maszyny wirtualnej dla NGINX Load Balancer
-create_vm "petclinic-nginx-lb" "10.0.0.9"
 
 # Tworzenie maszyny wirtualnej dla frontendu
-create_vm "petclinic-frontend" "10.0.0.4"
+create_vm_public "petclinic-frontend" "10.0.0.4"
 
+# Tworzenie maszyny wirtualnej dla NGINX Load Balancer
+create_vm_public "petclinic-nginx" "10.0.0.5"
+
+# Tworzenie maszyn wirtualnych dla backendu
+create_vm "petclinic-backend-1" "10.0.0.6"
+create_vm "petclinic-backend-2" "10.0.0.7"
+
+# Tworzenie maszyn wirtualnych dla bazy danych master i slave
+create_vm "petclinic-db-master" "10.0.0.8"
+create_vm "petclinic-db-slave" "10.0.0.9"
+
+# Otwórz porty dla bazy danych master
+az vm open-port --resource-group $resourceGroup --name petclinic-db-master --port 3306 --priority 1001
+
+# Otwórz porty dla bazy danych slave
+az vm open-port --resource-group $resourceGroup --name petclinic-db-slave --port 3306 --priority 1002
+
+# Otwórz porty dla serwerów backendowych
+az vm open-port --resource-group $resourceGroup --name petclinic-backend-1 --port 9966 --priority 1011
+az vm open-port --resource-group $resourceGroup --name petclinic-backend-2 --port 9966 --priority 1012
+
+# Otwórz porty dla NGINX Load Balancer
+az vm open-port --resource-group $resourceGroup --name petclinic-nginx --port 80 --priority 1013
+az vm open-port --resource-group $resourceGroup --name petclinic-nginx --port 443 --priority 1014
+
+# Otwórz porty dla frontendu Angular
+az vm open-port --resource-group $resourceGroup --name petclinic-frontend --port 80 --priority 1015
+az vm open-port --resource-group $resourceGroup --name petclinic-frontend --port 443 --priority 1016
 # Konfiguracja bazy danych master i slave
 
 az vm run-command invoke \
@@ -92,35 +115,17 @@ az vm run-command invoke \
 
 az vm run-command invoke \
 				--resource-group $resourceGroup \
-				--name "petclinic-nginx-lb" \
+				--name "petclinic-nginx" \
 				--command-id RunShellScript \
 				--scripts "@./nginx.sh"	
 
 
-# Konfiguracja frontendu Angular
+# Konfiguracja frontendu Angular         
 
-az vm run-command invoke  --command-id RunShellScript --name petclinic-frontend -g WUS  \
-    --scripts 'sudo apt update' \
-    'sudo apt upgrade -y' \
-    'sudo apt install npm -y' \
-    'sudo sudo npm cache clean -f' \
-    'sudo npm install -g n' \
-    'sudo n stable' \
-    'hash -r' \
-
-echo 'Done.'
-
-echo 'Installing project packages and launching the app...'
-
-az vm run-command invoke  --command-id RunShellScript --name petclinic-frontend -g WUS  \
-    --scripts 'npm uninstall -g angular-cli @angular/cli' \
-    'npm install -g @angular/cli@latest' \
-    'git clone https://github.com/bkisly/spring-petclinic-angular.git' \
-    'cd spring-petclinic-angular/' \
-    'npm install --save-dev @angular/cli@latest --force' \
-    'rm package-lock.json' \
-    'npm install --force' \
-    'echo N | ng analytics off' \
-    'echo Y | sudo ng serve --host 0.0.0.0 --port 80 &'
+az vm run-command invoke  \
+                --command-id RunShellScript \
+                --name petclinic-frontend -g $resourceGroup  \
+                --script '@./src/frontend.sh' \
+                --parameters $(az vm show -g $resourceGroup -n petclinic-nginx -d --query [publicIps] --output tsv)
 
 echo 'Done.'
