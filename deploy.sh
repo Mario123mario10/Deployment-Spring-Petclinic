@@ -31,7 +31,8 @@ create_vm() {
         --admin-username azureuser --generate-ssh-keys \
         --image Ubuntu2204 --public-ip-address "" \
         --vnet-name $vnetName --subnet $subnetName \
-        --private-ip-address $privateIpAddress
+        --private-ip-address $privateIpAddress \
+        --size Standard_NC6
     echo 'Done.'
 }
 
@@ -44,7 +45,8 @@ create_vm_public() {
         --admin-username azureuser --generate-ssh-keys \
         --image Ubuntu2204 --public-ip-sku Standard \
         --vnet-name $vnetName --subnet $subnetName \
-        --private-ip-address $privateIpAddress
+        --private-ip-address $privateIpAddress \
+        --size Standard_NC6
     echo 'Done.'
 }
 
