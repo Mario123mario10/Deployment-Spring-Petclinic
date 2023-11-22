@@ -1,5 +1,6 @@
 #!/bin/sh
 
+
 # Ustawienia ogólne
 resourceGroup="WUS3"
 vnetName="petclinic-vnet"
@@ -56,12 +57,12 @@ create_vm_public "petclinic-frontend" "10.0.0.4"
 #create_vm_public "petclinic-nginx" "10.0.0.5"
 
 # Tworzenie maszyn wirtualnych dla backendu
-create_vm "petclinic-backend-1" "10.0.0.6"
-create_vm "petclinic-backend-2" "10.0.0.7"
+create_vm "petclinic-backend" "10.0.0.5"
+#create_vm "petclinic-backend-2" "10.0.0.7"
 
 # Tworzenie maszyn wirtualnych dla bazy danych master i slave
-create_vm "petclinic-db-master" "10.0.0.8"
-create_vm "petclinic-db-slave" "10.0.0.9"
+create_vm "petclinic-db-master" "10.0.0.6"
+create_vm "petclinic-db-slave" "10.0.0.7"
 
 # Otwórz porty dla bazy danych master
 az vm open-port --resource-group $resourceGroup --name petclinic-db-master --port 3306 --priority 1001
@@ -70,16 +71,18 @@ az vm open-port --resource-group $resourceGroup --name petclinic-db-master --por
 az vm open-port --resource-group $resourceGroup --name petclinic-db-slave --port 3306 --priority 1002
 
 # Otwórz porty dla serwerów backendowych
-az vm open-port --resource-group $resourceGroup --name petclinic-backend-1 --port 9966 --priority 1011
-az vm open-port --resource-group $resourceGroup --name petclinic-backend-2 --port 9966 --priority 1012
+az vm open-port --resource-group $resourceGroup --name petclinic-backend --port 9961 --priority 1011
+az vm open-port --resource-group $resourceGroup --name petclinic-backend --port 9962 --priority 1012
+#az vm open-port --resource-group $resourceGroup --name petclinic-backend-2 --port 9966 --priority 1012
 
 # Otwórz porty dla NGINX Load Balancer
 #az vm open-port --resource-group $resourceGroup --name petclinic-nginx --port 80 --priority 1013
 #az vm open-port --resource-group $resourceGroup --name petclinic-nginx --port 443 --priority 1014
 
 # Otwórz porty dla frontendu Angular
-az vm open-port --resource-group $resourceGroup --name petclinic-frontend --port 80 --priority 1015
-az vm open-port --resource-group $resourceGroup --name petclinic-frontend --port 443 --priority 1016
+az vm open-port --resource-group $resourceGroup --name petclinic-frontend --port 80 --priority 1013
+az vm open-port --resource-group $resourceGroup --name petclinic-frontend --port 443 --priority 1014
+az vm open-port --resource-group $resourceGroup --name petclinic-frontend --port 8081 --priority 1015
 # Konfiguracja bazy danych master i slave
 
 az vm run-command invoke \
@@ -100,14 +103,14 @@ az vm run-command invoke \
 
 az vm run-command invoke \
                     --resource-group $resourceGroup \
-                    --name "petclinic-backend-1" \
+                    --name "petclinic-backend" \
                     --command-id RunShellScript \
                     --scripts "@./petclinic-backend-1.sh"
 					
 
 az vm run-command invoke \
                     --resource-group $resourceGroup \
-                    --name "petclinic-backend-2" \
+                    --name "petclinic-backend" \
                     --command-id RunShellScript \
                     --scripts "@./petclinic-backend-2.sh"			
 

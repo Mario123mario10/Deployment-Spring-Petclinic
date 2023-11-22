@@ -11,12 +11,12 @@ sudo systemctl stop nginx
 cat <<EOT | sudo tee /etc/nginx/nginx.conf
 http {
     upstream backend_servers {
-        server 10.0.0.6:9966;
-        server 10.0.0.7:9966;
+        server 10.0.0.5:9961;
+        server 10.0.0.5:9962;
     }
 
     server {
-        listen 80;
+        listen 8081;
 
         location / {
             proxy_pass http://backend_servers;

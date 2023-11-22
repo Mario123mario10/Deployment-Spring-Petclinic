@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MASTER_IP="10.0.0.8"  # Adres IP bazy danych master
+MASTER_IP="10.0.0.6"  # Adres IP bazy danych master
 DB_USER="admin"
 DB_PASSWORD="admin"
 MASTER_LOG_FILE="mysql-bin.000001"  # Pobierz aktualną nazwę pliku z mastera

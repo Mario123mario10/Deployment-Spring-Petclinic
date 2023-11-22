@@ -26,6 +26,7 @@ sudo sed -i "s/.*server-id.*/server-id = 1/" $CONFIG_FILE
 sudo sed -i "s/.*log_bin.*/log_bin = \\/var\\/log\\/mysql\\/mysql-bi.log/" $CONFIG_FILE
 sudo sed -i "1s/^/USE petclinic;\n/" ./populateDB.sql
 
+
 cat ./init.sql | sudo mysql -f
 cat ./initDB.sql | sudo mysql -f
 cat ./populateDB.sql | sudo mysql -f
