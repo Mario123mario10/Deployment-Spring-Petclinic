@@ -20,7 +20,7 @@ sed -i "s/=hsqldb/=mysql/g" ./src/main/resources/application.properties
 sed -i "s/localhost/$DB_ADDRESS/g" ./src/main/resources/application-mysql.properties
 sed -i "s/pc/$DB_USER/g" ./src/main/resources/application-mysql.properties
 sed -i "s/=petclinic/=$DB_PASSWORD/g" ./src/main/resources/application-mysql.properties
-sed -i "s/9966/$SERVER_PORT/g" ./src/main/resources/application.properties
+sed -i "s/9966/$BACKEND_PORT/g" ./src/main/resources/application.properties
 sed -i "s/3306/$DB_PORT/g" ./src/main/resources/application-mysql.properties
 
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/
