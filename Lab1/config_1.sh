@@ -60,7 +60,7 @@ echo 'Creating VM for back-end...'
 
 #BACK-END 1
 
-az vm create --name petclinic-backend1 --resource-group WUS \
+az vm create --name petclinic-backend --resource-group WUS \
     --admin-username azureuser --generate-ssh-keys \
     --image Ubuntu2204 --vnet-name petclinic-vnet \
     --subnet petclinic-subnet --private-ip-address 10.0.0.5
@@ -71,17 +71,17 @@ echo 'Opening HTTP(S) ports for the VM...'
 
 az vm open-port \
     --resource-group WUS \
-    --name petclinic-backend1  \
+    --name petclinic-backend  \
     --port 80 --priority 1011
 
 az vm open-port \
     --resource-group WUS \
-    --name petclinic-backend1  \
+    --name petclinic-backend  \
     --port 443 --priority 1010
 
 az vm open-port \
     --resource-group WUS \
-    --name petclinic-backend1  \
+    --name petclinic-backend  \
     --port 9966 --priority 1012
 
 echo 'Done.'
