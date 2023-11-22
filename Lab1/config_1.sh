@@ -99,17 +99,17 @@ echo 'Done.'
 az vm open-port \
     --resource-group WUS \
     --name petclinic-backend  \
-    --port 80 --priority 1011
+    --port 80 --priority 1014
 
 az vm open-port \
     --resource-group WUS \
     --name petclinic-backend \
-    --port 443 --priority 1010
+    --port 443 --priority 1013
 
 az vm open-port \
     --resource-group WUS \
     --name petclinic-backend \
-    --port 9967 --priority 1012
+    --port 9967 --priority 1015
 
 echo 'Done.'
 
@@ -126,17 +126,17 @@ echo 'Done.'
 az vm open-port \
     --resource-group WUS \
     --name petclinic-backend  \
-    --port 80 --priority 1011
+    --port 80 --priority 1017
 
 az vm open-port \
     --resource-group WUS \
     --name petclinic-backend  \
-    --port 443 --priority 1010
+    --port 443 --priority 1016
 
 az vm open-port \
     --resource-group WUS \
     --name petclinic-backend  \
-    --port 9968 --priority 1013
+    --port 9968 --priority 1018
 
 echo 'Done.'
 
