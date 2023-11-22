@@ -23,7 +23,7 @@ echo 'Creating VM for the database...'
 
 az vm create --name petclinic-db --resource-group WUS \
     --admin-username azureuser --generate-ssh-keys \
-    --image Ubuntu2204 \
+    --image Ubuntu2204 --public-ip-address "" \
     --vnet-name petclinic-vnet --subnet petclinic-subnet --private-ip-address 10.0.0.6
 
 echo 'Done.'
@@ -50,7 +50,7 @@ echo 'Done.'
 echo 'Installing database...'
 
 az vm run-command invoke  --command-id RunShellScript --name petclinic-db -g WUS  \
-    --script ./src/database.sh
+    --script '@./src/database.sh'
 
 echo 'Done.'
 
@@ -87,7 +87,7 @@ echo 'Done.'
 echo 'Installing project...'
 
 az vm run-command invoke  --command-id RunShellScript --name petclinic-backend -g WUS  \
-    --script ./src/backend.sh
+    --script '@./src/backend.sh'
 
 echo 'Done.'
 
@@ -119,6 +119,6 @@ echo 'Done.'
 echo 'Installing project...'
 
 az vm run-command invoke  --command-id RunShellScript --name petclinic-frontend -g WUS  \
-    --script ./src/frontend.sh
+    --script '@./src/frontend.sh' --parameters $(az vm show -g WUS -n petclinic-backend -d --query [publicIps] --output tsv)
 
 echo 'Done.'

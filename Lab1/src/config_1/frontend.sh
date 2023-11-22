@@ -1,33 +1,28 @@
 #!/bin/sh
 
-BACKEND_IP="10.0.0.5"
-
-# Instalation
-sudo apt-get update
-sudo apt-get upgrade -y
-sudo apt autoremove -y
-sudo apt-get install curl -y
-sudo apt-get install npm -y
+BACKEND_IP="$1"
 
 cd ~/
 
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+sudo apt update
+sudo apt upgrade -y
+sudo apt install npm -y
 
-nvm install 12.11.1
+sudo npm cache clean -f
+sudo npm install -g n
+sudo n stable
+hash -r
 
+sudo npm uninstall -g angular-cli @angular/cli
+sudo npm install -g @angular/cli@latest
 
 git clone https://github.com/spring-petclinic/spring-petclinic-angular.git
-cd spring-petclinic-angular
-
+cd spring-petclinic-angular/
 sed -i "s/localhost/$BACKEND_IP/g" src/environments/environment.ts src/environments/environment.prod.ts
 
-echo N|npm install -g @angular/cli@latest
-echo N| npm install 
+npm install --save-dev @angular/cli@latest --force
+rm package-lock.json
+npm install --force
+
 echo N | ng analytics off
-
-npm install angular-http-server
-npm run build -- --prod
-
-sudo npx angular-http-server --path ./dist -p 80 &
+echo Y | sudo ng serve --host 0.0.0.0 --port 80 &
