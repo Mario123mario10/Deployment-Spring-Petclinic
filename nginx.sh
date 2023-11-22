@@ -31,6 +31,3 @@ EOT
 
 # Restart serwera NGINX aby zastosować nową konfigurację
 sudo systemctl start nginx
-
-
-
