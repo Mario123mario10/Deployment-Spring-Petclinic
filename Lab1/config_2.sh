@@ -89,7 +89,7 @@ echo 'Done.'
 echo 'Installing project...'
 
 az vm run-command invoke  --command-id RunShellScript --name petclinic-backend -g WUS  \
-    --script '@./src/backend.sh'
+    --script '@./src/backend.sh' --parameters 9966
 
 echo 'Done.'
 
@@ -116,7 +116,7 @@ echo 'Done.'
 echo 'Installing project...'
 
 az vm run-command invoke  --command-id RunShellScript --name petclinic-backend -g WUS  \
-    --script '@./src/backend.sh'
+    --script '@./src/backend.sh' --parameters 9967
 
 echo 'Done.'
 
@@ -143,7 +143,7 @@ echo 'Done.'
 echo 'Installing project...'
 
 az vm run-command invoke  --command-id RunShellScript --name petclinic-backend -g WUS  \
-    --script '@./src/backend.sh'
+    --script '@./src/backend.sh' --parameters 9968
 
 echo 'Done.'
 
@@ -170,6 +170,11 @@ az vm open-port \
     --name petclinic-nginx  \
     --port 443 --priority 1010
 
+az vm open-port \
+    --resource-group WUS \
+    --name petclinic-nginx  \
+    --port 8080 --priority 1012
+
 
 echo 'Done.'
 
@@ -195,27 +200,20 @@ az vm open-port \
     --name petclinic-frontend  \
     --port 80 --priority 1011
 
-az vm open-port \
-    --resource-group WUS \
-    --name petclinic-frontend  \
-    --port 443 --priority 1010
 
 echo 'Done.'
 
 echo 'Installing project...'
 
 az vm run-command invoke  --command-id RunShellScript --name petclinic-frontend -g WUS  \
-    --script '@./src/frontend.sh' --parameters $(az vm show -g WUS -n petclinic-nginx -d --query [publicIps] --output tsv) \
-    80
+    --script '@./src/frontend.sh' --parameters $(az vm show -g WUS -n petclinic-backend -d --query [publicIps] --output tsv) 80 8080
 
 
 az vm run-command invoke  --command-id RunShellScript --name petclinic-nginx -g WUS  \
-    --script '@./src/nginx.sh' --parameters $(az vm show -g WUS -n petclinic-backend -d --query [publicIps] --output tsv) \
+    --script '@./src/nginx.sh' --parameters 8080 \
     9966 \
     9967 \
-    9968 \
-    $(az vm show -g WUS -n petclinic-frontend -d --query [publicIps] --output tsv) \
-    80 
+    9968 
 
 echo 'Done.'
 

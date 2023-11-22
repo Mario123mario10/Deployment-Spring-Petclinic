@@ -1,22 +1,21 @@
-#!/bin/sh
+#!/bin/bash
 
+BACKEND_PORT=$1
 DB_ADDRESS=10.0.0.8
-DB_USER=admin
-DB_PASSWORD=admin
 
-cd ~/
+sudo apt update -y
+sudo apt install -y openjdk-11-jdk
 
-sudo apt update
-sudo apt upgrade -y
-sudo apt install openjdk-17-jdk -y
+cd ~
 
 git clone https://github.com/spring-petclinic/spring-petclinic-rest.git
 cd spring-petclinic-rest
 
-sed -i "s/=hsqldb/=mysql/g" ./src/main/resources/application.properties 
-sed -i "s/localhost/$DB_ADDRESS/g" ./src/main/resources/application-mysql.properties
-sed -i "s/pc/$DB_USER/g" ./src/main/resources/application-mysql.properties
-sed -i "s/=petclinic/=$DB_PASSWORD/g" ./src/main/resources/application-mysql.properties
 
-export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/
-./mvnw spring-boot:run &
+sed -i "s/spring.datasource.password=petclinic/spring.datasource.password=pc/" src/main/resources/application-mysql.properties
+sed -i "s/localhost/$DB_ADDRESS/" src/main/resources/application-mysql.properties
+sed -i "s/hsqldb/mysql/" src/main/resources/application.properties
+sed -i "s/9966/$BACKEND_PORT/g" src/main/resources/application.properties src/test/resources/application.properties
+
+sudo ./mvnw spring-boot:run > ~/spring.log &
+

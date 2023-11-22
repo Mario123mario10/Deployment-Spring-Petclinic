@@ -1,36 +1,33 @@
 #!/bin/bash
 
-BACKEDN_IP=$1
-PORT1=$2
-PORT2=$3
-PORT3=$4
-FRONT_IP=$5
-FRONT_PORT=$6
+NGINX_PORT=$1
+BACKEND_1=$2
+BACKEND_2=$3
+BACKEND_3=$4
 
+sudo su
+sudo apt update -y
+sudo apt install -y nginx
 
+cd ~
 
-sudo apt-get update -y
-sudo apt install nginx -y
+cat > loadbalancer.conf << EOL
+upstream backend {
+    server $BACKEND_1;
+    server $BACKEND_2;
+    server $BACKEND_3;
+}
 
+server {
+    listen      $NGINX_PORT;
 
-# Tworzenie nowego pliku konfiguracyjnego dla NGINX
-cat <<EOT | sudo tee /etc/nginx/nginx.conf
-http {
-    upstream backend_servers {
-        server $BACKEDN_IP:$PORT1;
-        server $BACKEDN_IP:$PORT2;
-        server $BACKEDN_IP:$PORT3;
-    }
-
-    server {
-        listen $FRONT_PORT;
-
-        location /petclinic/api {
-            proxy_pass http://backend_servers;
-        }
+    location /petclinic/api {
+        proxy_pass http://backend;
     }
 }
-EOT
+EOL
 
-# Restart serwera NGINX aby zastosować nową konfigurację
+sudo mv loadbalancer.conf /etc/nginx/conf.d/loadbalancer.conf
+
 sudo nginx -s reload
+

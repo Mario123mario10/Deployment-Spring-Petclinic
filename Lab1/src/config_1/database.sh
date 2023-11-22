@@ -1,35 +1,26 @@
-#!/bin/sh
+#!/bin/bash
 
-DB_USER=admin
-DB_PASSWORD=admin
-
-CONFIG_FILE="/etc/mysql/mysql.conf.d/mysqld.cnf"
 INIT_DATABASE="https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-rest/master/src/main/resources/db/mysql/initDB.sql"
 POPULATE_DATABASE="https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-rest/master/src/main/resources/db/mysql/populateDB.sql"
+MY_SQL_CONFIG="/etc/mysql/mysql.conf.d/mysqld.cnf"
 
-cd ~/
-
-sudo apt update
-sudo apt upgrade -y
-
+sudo apt-get update
 sudo apt install mysql-server -y
 sudo apt install wget -y
-
-echo "CREATE USER '$DB_USER'@'%' IDENTIFIED BY '$DB_PASSWORD';" >> init.sql
-echo "GRANT ALL PRIVILEGES ON *.* TO '$DB_USER'@'%' WITH GRANT OPTION;" >> init.sql
 
 wget $INIT_DATABASE
 wget $POPULATE_DATABASE
 
-sudo sed -i "s/127.0.0.1/0.0.0.0/g" $CONFIG_FILE
-sudo sed -i "s/3306/$DATABASE_PORT/" $CONFIG_FILE
-sudo sed -i "s/.*server-id.*/server-id = 1/" $CONFIG_FILE
-sudo sed -i "s/.*log_bin.*/log_bin = \\/var\\/log\\/mysql\\/mysql-bi.log/" $CONFIG_FILE
-sudo sed -i "1s/^/USE petclinic;\n/" ./populateDB.sql
+sed -i "s/127.0.0.1/0.0.0.0/" $MY_SQL_CONFIG
+sed -i "s/localhost/0.0.0.0/" ./initDB.sql
 
-cat ./init.sql | sudo mysql -f
-cat ./initDB.sql | sudo mysql -f
-cat ./populateDB.sql | sudo mysql -f
+sudo mysql -e "CREATE USER 'pc'@'%' IDENTIFIED BY 'pc';"
+sudo mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'pc'@'%' WITH GRANT OPTION;"
+sudo mysql -e "FLUSH PRIVILEGES;"
+cat ./populateDB.sql >> ./initDB.sql
+sudo mysql < ./initDB.sql
 
-sudo mysql -v -e "FLUSH PRIVILEGES;"
 sudo service mysql restart
+
+sudo mysql -v -e "UNLOCK TABLES;"
+echo "MySQL server is installed and configured"
