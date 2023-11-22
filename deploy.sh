@@ -128,7 +128,7 @@ az vm run-command invoke \
 az vm run-command invoke  \
                 --command-id RunShellScript \
                 --name petclinic-frontend -g $resourceGroup  \
-                --script '@./src/frontend.sh' \
+                --script '@./frontend.sh' \
                 --parameters $(az vm show -g $resourceGroup -n petclinic-frontend -d --query [publicIps] --output tsv)
 
 echo 'Done.'
