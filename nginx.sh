@@ -9,6 +9,18 @@ sudo systemctl stop nginx
 
 # Tworzenie nowego pliku konfiguracyjnego dla NGINX
 cat <<EOT | sudo tee /etc/nginx/nginx.conf
+
+# Global settings
+user nginx;
+worker_processes auto;
+pid /run/nginx.pid;
+include /usr/share/nginx/modules/*.conf;
+
+# Events section
+events {
+    worker_connections 1024;
+}
+
 http {
     upstream backend_servers {
         server 10.0.0.5:9961;
