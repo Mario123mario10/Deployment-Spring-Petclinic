@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BACKEND_IP="$1"
+NGINX_IP="$1"
 
 cd ~/
 
@@ -18,7 +18,7 @@ sudo npm install -g @angular/cli@latest
 
 git clone https://github.com/spring-petclinic/spring-petclinic-angular.git
 cd spring-petclinic-angular/
-sed -i "s/localhost/$BACKEND_IP/g" src/environments/environment.ts src/environments/environment.prod.ts
+sed -i "s/localhost/$NGINX_IP/g" src/environments/environment.ts src/environments/environment.prod.ts
 
 npm install --save-dev @angular/cli@latest --force
 rm package-lock.json
