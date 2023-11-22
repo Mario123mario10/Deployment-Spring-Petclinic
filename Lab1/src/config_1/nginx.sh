@@ -13,9 +13,9 @@ cd ~
 
 cat > loadbalancer.conf << EOL
 upstream backend {
-    server $BACKEND_1;
-    server $BACKEND_2;
-    server $BACKEND_3;
+    server 10.0.0.5:$BACKEND_1;
+    server 10.0.0.5:$BACKEND_2;
+    server 10.0.0.5:$BACKEND_3;
 }
 
 server {
