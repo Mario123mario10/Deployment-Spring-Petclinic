@@ -31,8 +31,7 @@ create_vm() {
         --admin-username azureuser --generate-ssh-keys \
         --image Ubuntu2204 --public-ip-address "" \
         --vnet-name $vnetName --subnet $subnetName \
-        --private-ip-address $privateIpAddress \
-        --size Standard_NC6
+        --private-ip-address $privateIpAddress
     echo 'Done.'
 }
 
@@ -45,8 +44,7 @@ create_vm_public() {
         --admin-username azureuser --generate-ssh-keys \
         --image Ubuntu2204 --public-ip-sku Standard \
         --vnet-name $vnetName --subnet $subnetName \
-        --private-ip-address $privateIpAddress \
-        --size Standard_NC6
+        --private-ip-address $privateIpAddress
     echo 'Done.'
 }
 
@@ -55,7 +53,7 @@ create_vm_public() {
 create_vm_public "petclinic-frontend" "10.0.0.4"
 
 # Tworzenie maszyny wirtualnej dla NGINX Load Balancer
-create_vm_public "petclinic-nginx" "10.0.0.5"
+#create_vm_public "petclinic-nginx" "10.0.0.5"
 
 # Tworzenie maszyn wirtualnych dla backendu
 create_vm "petclinic-backend-1" "10.0.0.6"
@@ -76,8 +74,8 @@ az vm open-port --resource-group $resourceGroup --name petclinic-backend-1 --por
 az vm open-port --resource-group $resourceGroup --name petclinic-backend-2 --port 9966 --priority 1012
 
 # Otwórz porty dla NGINX Load Balancer
-az vm open-port --resource-group $resourceGroup --name petclinic-nginx --port 80 --priority 1013
-az vm open-port --resource-group $resourceGroup --name petclinic-nginx --port 443 --priority 1014
+#az vm open-port --resource-group $resourceGroup --name petclinic-nginx --port 80 --priority 1013
+#az vm open-port --resource-group $resourceGroup --name petclinic-nginx --port 443 --priority 1014
 
 # Otwórz porty dla frontendu Angular
 az vm open-port --resource-group $resourceGroup --name petclinic-frontend --port 80 --priority 1015
@@ -117,7 +115,7 @@ az vm run-command invoke \
 
 az vm run-command invoke \
 				--resource-group $resourceGroup \
-				--name "petclinic-nginx" \
+				--name "petclinic-frontend" \
 				--command-id RunShellScript \
 				--scripts "@./nginx.sh"	
 
@@ -128,6 +126,6 @@ az vm run-command invoke  \
                 --command-id RunShellScript \
                 --name petclinic-frontend -g $resourceGroup  \
                 --script '@./src/frontend.sh' \
-                --parameters $(az vm show -g $resourceGroup -n petclinic-nginx -d --query [publicIps] --output tsv)
+                --parameters $(az vm show -g $resourceGroup -n petclinic-frontend -d --query [publicIps] --output tsv)
 
 echo 'Done.'
