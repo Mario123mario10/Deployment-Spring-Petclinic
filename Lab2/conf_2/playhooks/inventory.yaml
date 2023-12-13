@@ -1,0 +1,36 @@
+all:
+  children:
+    vms:
+      hosts:
+        front_vm:
+          ansible_host: 20.224.232.61
+        back_vm:
+          ansible_host: 20.234.165.20
+
+  vars:  
+    ansible_user: azureuser
+    ansible_ssh_private_key_file: ~/.ssh/wus-pk.pem
+    
+    db_port: 3306
+    db_ip: 20.234.165.20
+    
+    backend_write_port: 3000
+    backend_write_ip: 20.234.165.20
+    
+    frontend_port: 80
+    frontend_ip: 20.224.232.61
+    
+    db_master_port: 3306
+    db_master_ip: 20.234.165.20
+    
+    db_slave_port: 3305
+    db_slave_ip: 20.234.165.20
+    
+    backend_port: 3000
+    backend_ip: 20.234.165.20
+    
+    nginx_port: 3500
+    nginx_ip: 20.224.232.61
+    
+    backend_read_port: 3001
+    backend_read_ip: 20.234.165.20

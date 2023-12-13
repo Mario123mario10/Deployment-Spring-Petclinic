@@ -1,0 +1,57 @@
+# Frontend on front_vm
+- hosts: front_vm
+  tasks:
+  - name: Copying files for frontend
+    become: true
+    ansible.builtin.copy:
+      src: ./src/frontend/
+      dest: /petclinic/frontend/
+      
+  - name: Building docker image for frontend
+    command: docker build -t wus-frontend /petclinic/frontend/
+    
+  - name: Starting docker container for frontend
+    command: docker run -d --name wus-frontend -p {{ frontend_port }}:80 -e API_IP={{ backend_write_ip }} -e API_PORT={{ backend_write_port }} wus-frontend
+    
+  - name: Print frontend address and port
+    ansible.builtin.debug:
+      msg: Frontend available on {{ frontend_ip }}, port {{ frontend_port }}
+      
+# Backend_write on back_vm
+- hosts: back_vm
+  tasks:
+  - name: Copying files for backend_write
+    become: true
+    ansible.builtin.copy:
+      src: ./src/backend/
+      dest: /petclinic/backend_write/
+      
+  - name: Building docker image for backend_write
+    command: docker build -t wus-backend_write /petclinic/backend_write/
+    
+  - name: Starting docker container for backend_write
+    command: docker run -d --name wus-backend_write -p {{ backend_write_port }}:3000 -e DB_MASTER_IP={{ db_ip }} -e DB_MASTER_PORT={{ db_port }} wus-backend_write
+    
+  - name: Print backend address and port
+    ansible.builtin.debug:
+      msg: Backend available on {{ backend_write_ip }}, port {{ backend_write_port }}
+      
+
+# Database on back_vm
+- hosts: back_vm
+  tasks:
+  - name: Copying files for DB
+    become: true
+    ansible.builtin.copy:
+      src: ./src/database/
+      dest: /petclinic/db/
+      
+  - name: Building docker image for DB
+    command: docker build -t wus-database /petclinic/db/
+    
+  - name: Starting docker container for DB
+    command: docker run -d --name wus-database -p {{ db_port }}:3306 wus-database
+      
+  - name: Print database address and port
+    ansible.builtin.debug:
+      msg: Database available on {{ db_ip }}, port {{ db_port }}
