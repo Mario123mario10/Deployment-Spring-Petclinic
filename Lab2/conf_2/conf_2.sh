@@ -81,7 +81,7 @@ echo 'Creating VM for nginx...'
 az vm create --name petclinic-nginx --resource-group WUS \
     --admin-username azureuser --generate-ssh-keys \
     --image Ubuntu2204 --vnet-name petclinic-vnet \
-    --subnet petclinic-subnet --private-ip-address 10.0.0.5
+    --subnet petclinic-subnet --private-ip-address 10.0.0.7
 
 echo 'Done.'
 
