@@ -6,6 +6,8 @@ all:
           ansible_host: FRONTEND_HOST
         back_vm:
           ansible_host: BACKEND_HOST
+        db_vm:
+          ansible_host: DB_HOST
 
   vars:  
     ansible_user: azureuser
