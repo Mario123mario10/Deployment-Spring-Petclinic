@@ -1,0 +1,34 @@
+- name: Install curl
+  become: true
+  apt:
+    name: curl
+    state: latest
+
+- name: Clone spring repository
+  ansible.builtin.git:
+    repo: https://github.com/spring-petclinic/spring-petclinic-angular.git
+    dest: /home/{{ ansible_user }}/spring-petclinic-angular/
+    force: yes
+
+- name: Update configuration
+  ansible.builtin.script:
+    cmd: front.sh {{ backend_address }} {{ backend_port }}
+    chdir: /home/{{ ansible_user }}/spring-petclinic-angular/
+
+- name: Copy run script
+  ansible.builtin.copy:
+    src: install.sh
+    dest: /home/{{ ansible_user }}/install.sh
+
+- name: Add execute privileges
+  become: true
+  ansible.builtin.command:
+    cmd: chmod +x ./install.sh
+    chdir: /home/{{ ansible_user }}/
+
+- name: Install package manager and deploy application
+  async: 3600
+  poll: 0
+  ansible.builtin.command:
+    cmd: ./install.sh {{ frontend_port }}
+    chdir: /home/{{ ansible_user }}/

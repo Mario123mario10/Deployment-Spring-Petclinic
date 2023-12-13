@@ -1,0 +1,62 @@
+all:
+  hosts:
+    hostFront:
+      vm_name: front
+      ansible_user: jakub_wozniak
+      ansible_ssh_private_key_file: ~/.ssh/id_rsa
+      ansible_host: 52.232.20.83
+    hostBack:
+      vm_name: back
+      ansible_user: jakub_wozniak
+      ansible_ssh_private_key_file: ~/.ssh/id_rsa
+      ansible_host: 52.232.19.218
+    hostDb:
+      vm_name: database
+      ansible_user: jakub_wozniak
+      ansible_ssh_private_key_file: ~/.ssh/id_rsa
+      ansible_host: 52.232.19.44
+  children:
+    frontend:
+      hosts:
+        hostFront:
+          frontend_port: 8080
+          backend_address: 52.232.19.218
+          backend_port: 8078
+    nginx:
+      hosts:
+        hostFront:
+          nginx_port: 8078
+          read_backend_address: 10.0.2.10
+          read_backend_port: 8080
+          write_backend_address: 10.0.2.10
+          write_backend_port: 8079
+    backend:
+      hosts:
+        hostBack:
+          parameters:
+            - backend_port: 8079
+              database_address: 10.0.2.10
+              database_port: 3037
+              database_user: admin
+              database_password: password
+              directory: first
+            - backend_port: 8080
+              database_address: 10.0.3.10
+              database_port: 3036
+              database_user: admin
+              database_password: password
+              directory: second
+    db_master:
+      hosts:
+        hostDb:
+          database_port: 3036
+          database_user: admin
+          database_password: password
+    db_slave:
+      hosts:
+        hostBack:
+          database_port: 3037
+          database_user: admin
+          database_password: password
+          master_database_address: 10.0.3.10
+          master_database_port: 3036

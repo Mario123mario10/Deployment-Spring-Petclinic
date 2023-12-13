@@ -1,0 +1,63 @@
+---
+
+- hosts: 
+  - all
+  - localhost
+  become: true
+  pre_tasks:
+    - name: Update repository index
+      apt:
+        update_cache: yes
+    
+    - name: Upgrade packages
+      apt:
+        upgrade: dist
+
+- hosts: 
+  - frontend
+  roles:
+    - frontend
+
+- hosts:
+  - db_master
+  - db_slave
+  become: true
+  roles:
+    - db_base
+
+- hosts:
+  - db_master
+  become: true
+  roles:
+    - db_master
+
+- hosts:
+  - db_slave
+  become: true
+  roles:
+    - db_slave
+
+- hosts: 
+  - backend
+  - backend_replicaset
+  become: true
+  roles:
+    - backend_base
+
+- hosts:
+  - backend
+  become: true
+  roles:
+    - backend
+
+- hosts:
+  - backend_replicaset
+  become: true
+  roles:
+    - backend_replicaset
+  
+- hosts:
+  - nginx
+  become: true
+  roles:
+    - nginx
