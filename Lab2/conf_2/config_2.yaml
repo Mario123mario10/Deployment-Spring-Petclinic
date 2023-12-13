@@ -24,7 +24,7 @@
   - name: Copying files for nginx
     become: true
     ansible.builtin.copy:
-      src: ./nginx/
+      src: ./src/nginx/
       dest: /petclinic/nginx/
       
   - name: Building docker image for nginx
@@ -50,13 +50,13 @@
     command: docker build -t wus-backend /petclinic/backend/
     
   - name: Starting docker container for backend 1
-    command: docker run -d --name wus-backend -p {{ backend_port_1 }}:3000 -e DB_MASTER_IP={{ db_ip }} -e DB_MASTER_PORT={{ db_port }} wus-backend-1
+    command: docker run -d --name wus-backend-1 -p {{ backend_port_1 }}:3000 -e DB_MASTER_IP={{ db_ip }} -e DB_MASTER_PORT={{ db_port }} wus-backend
 
   - name: Starting docker container for backend 2
-    command: docker run -d --name wus-backend -p {{ backend_port_2 }}:3000 -e DB_MASTER_IP={{ db_ip }} -e DB_MASTER_PORT={{ db_port }} wus-backend-2
+    command: docker run -d --name wus-backend-2 -p {{ backend_port_2 }}:3000 -e DB_MASTER_IP={{ db_ip }} -e DB_MASTER_PORT={{ db_port }} wus-backend
     
   - name: Starting docker container for backend 3
-    command: docker run -d --name wus-backend -p {{ backend_port_3 }}:3000 -e DB_MASTER_IP={{ db_ip }} -e DB_MASTER_PORT={{ db_port }} wus-backend-3
+    command: docker run -d --name wus-backend-3 -p {{ backend_port_3 }}:3000 -e DB_MASTER_IP={{ db_ip }} -e DB_MASTER_PORT={{ db_port }} wus-backend
 
   - name: Print backend address and port
     ansible.builtin.debug:
