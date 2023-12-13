@@ -119,9 +119,8 @@ sed -i "s/DB_HOST/$DB_HOST/g" inventory_params.yaml
 sed -i "s/NGINX_HOST/$NGINX_HOST/g" inventory_params.yaml
 
 sed -i "s/FRONTEND_PORT/$FRONTEND_PORT/g" inventory_params.yaml
-sed -i "s/BACKEND_PORT/$BACKEND_PORT/g" inventory_params.yaml
+sed -i "s/BACKEND_PORT_1/$BACKEND_PORT_1/g" inventory_params.yaml
+sed -i "s/BACKEND_PORT_1/$BACKEND_PORT_2/g" inventory_params.yaml
+sed -i "s/BACKEND_PORT_1/$BACKEND_PORT_3/g" inventory_params.yaml
 sed -i "s/DB_PORT/$DB_PORT/g" inventory_params.yaml
 sed -i "s/NGINX_PORT/$NGINX_PORT/g" inventory_params.yaml
-
-ansible-playbook setup.yaml -i inventory_params.yaml
-ansible-playbook config_2.yaml -i inventory_params.yaml
