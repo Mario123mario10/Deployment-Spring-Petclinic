@@ -27,7 +27,7 @@
       dest: /petclinic/backend/
       
   - name: Building docker image for backend
-    command: docker build -t wus-backend /petclinic/backend_write/
+    command: docker build -t wus-backend /petclinic/backend/
     
   - name: Starting docker container for backend
     command: docker run -d --name wus-backend -p {{ backend_port }}:3000 -e DB_MASTER_IP={{ db_ip }} -e DB_MASTER_PORT={{ db_port }} wus-backend
