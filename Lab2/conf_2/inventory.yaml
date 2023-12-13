@@ -8,8 +8,6 @@ all:
           ansible_host: BACKEND_HOST
         db_vm:
           ansible_host: DB_HOST
-        nginx_vm:
-          ansible_host: NGINX_HOST
 
   vars:  
     ansible_user: azureuser
@@ -27,4 +25,3 @@ all:
     backend_ip: BACKEND_HOST
     
     nginx_port: NGINX_PORT
-    nginx_ip: NGINX_HOST

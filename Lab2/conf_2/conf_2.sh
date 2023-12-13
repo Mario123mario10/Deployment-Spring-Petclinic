@@ -7,9 +7,6 @@ BACKEND_PORT_3=8080
 DB_PORT=3306
 NGINX_PORT=5000
 
-BACKEND_HOST=10.0.0.5
-DB_HOST=10.0.0.6
-
 # CREATE RESOURCE GROUP
 
 echo 'Creating resource group for the infrastructure...'
@@ -33,8 +30,8 @@ echo 'Creating VM for the database...'
 
 az vm create --name petclinic-db --resource-group WUS \
     --admin-username azureuser --generate-ssh-keys \
-    --image Ubuntu2204 --public-ip-address "" \
-    --vnet-name petclinic-vnet --subnet petclinic-subnet --private-ip-address $DB_HOST
+    --image Ubuntu2204 \
+    --vnet-name petclinic-vnet --subnet petclinic-subnet --private-ip-address 10.0.0.6
 
 echo 'Done.'
 
@@ -53,8 +50,8 @@ echo 'Creating VM for back-end...'
 
 az vm create --name petclinic-backend --resource-group WUS \
     --admin-username azureuser --generate-ssh-keys \
-    --image Ubuntu2204 --public-ip-address="" --vnet-name petclinic-vnet \
-    --subnet petclinic-subnet --private-ip-address $BACKEND_HOST
+    --image Ubuntu2204 --vnet-name petclinic-vnet \
+    --subnet petclinic-subnet --private-ip-address 10.0.0.5
 
 echo 'Done.'
 
@@ -77,24 +74,6 @@ az vm open-port \
 
 echo 'Done.'
 
-# CONFIGURE NGINX
-
-echo 'Creating VM for nginx...'
-
-az vm create --name petclinic-nginx --resource-group WUS \
-    --admin-username azureuser --generate-ssh-keys \
-    --image Ubuntu2204 --vnet-name petclinic-vnet \
-    --subnet petclinic-subnet --private-ip-address 10.0.0.7
-
-echo 'Done.'
-
-echo 'Opening ports for the nginx VM...'
-
-az vm open-port \
-    --resource-group WUS \
-    --name petclinic-nginx  \
-    --port $NGINX_PORT --priority 1012
-
 # CONFIGURE FRONT-END
 
 echo 'Creating VM for front-end...'
@@ -111,10 +90,20 @@ echo 'Opening ports for the frontend VM...'
 az vm open-port \
     --resource-group WUS \
     --name petclinic-frontend  \
-    --port 80 --priority 1011
+    --port $FRONTEND_PORT --priority 1011
+
+echo 'Done.'
+echo 'Opening ports for nginx...'
+
+az vm open-port \
+    --resource-group WUS \
+    --name petclinic-frontend  \
+    --port $NGINX_PORT --priority 1012
 
 echo 'Done.'
 
+FRONTEND_HOST=$(az vm show -g WUS -n petclinic-frontend -d --query [publicIps] --output tsv)
+BACKEND_HOST=$(az vm show -g WUS -n petclinic-backend -d --query [publicIps] --output tsv)
 DB_HOST=$(az vm show -g WUS -n petclinic-db -d --query [publicIps] --output tsv)
 NGINX_HOST=$(az vm show -g WUS -n petclinic-nginx -d --query [publicIps] --output tsv)
 
