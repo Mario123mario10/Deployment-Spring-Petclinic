@@ -11,7 +11,7 @@
     command: docker build -t wus-frontend /petclinic/frontend/
     
   - name: Starting docker container for frontend
-    command: docker run -d --name wus-frontend -p {{ frontend_port }}:80 -e API_IP={{ backend_ip }} -e API_PORT={{ backend_port }} wus-frontend
+    command: docker run -d --name wus-frontend -p {{ frontend_port }}:80 -e API_IP={{ nginx_ip }} -e API_PORT={{ nginx_port }} wus-frontend
     
   - name: Print frontend address and port
     ansible.builtin.debug:
@@ -29,12 +29,18 @@
   - name: Building docker image for backend
     command: docker build -t wus-backend /petclinic/backend/
     
-  - name: Starting docker container for backend
-    command: docker run -d --name wus-backend -p {{ backend_port }}:3000 -e DB_MASTER_IP={{ db_ip }} -e DB_MASTER_PORT={{ db_port }} wus-backend
+  - name: Starting docker container for backend 1
+    command: docker run -d --name wus-backend -p {{ backend_port_1 }}:3000 -e DB_MASTER_IP={{ db_ip }} -e DB_MASTER_PORT={{ db_port }} wus-backend-1
+
+  - name: Starting docker container for backend 2
+    command: docker run -d --name wus-backend -p {{ backend_port_2 }}:3000 -e DB_MASTER_IP={{ db_ip }} -e DB_MASTER_PORT={{ db_port }} wus-backend-2
     
+  - name: Starting docker container for backend 3
+    command: docker run -d --name wus-backend -p {{ backend_port_3 }}:3000 -e DB_MASTER_IP={{ db_ip }} -e DB_MASTER_PORT={{ db_port }} wus-backend-3
+
   - name: Print backend address and port
     ansible.builtin.debug:
-      msg: Backend available on {{ backend_ip }}, port {{ backend_port }}
+      msg: Backend available on {{ backend_ip }}, ports - {{ backend_port_1 }}, {{ backend_port_2 }}, {{ backend_port_3 }}
       
 
 # Database on back_vm

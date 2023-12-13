@@ -19,7 +19,9 @@ all:
     frontend_port: FRONTEND_PORT
     frontend_ip: FRONTEND_HOST
     
-    backend_port: BACKEND_PORT
+    backend_port_1: BACKEND_PORT_1
+    backend_port_2: BACKEND_PORT_2
+    backend_port_3: BACKEND_PORT_3
     backend_ip: BACKEND_HOST
     
     nginx_port: NGINX_PORT
