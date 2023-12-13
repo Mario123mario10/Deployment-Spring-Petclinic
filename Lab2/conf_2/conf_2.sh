@@ -94,14 +94,14 @@ pip install ansible
 cat inventory.yaml > inventory_params.yaml
 
 sed -i "s/FRONTEND_HOST/$FRONTEND_HOST/g" inventory_params.yaml
-sed -i "s/FRONTEND_HOST/$BACKEND_HOST/g" inventory_params.yaml
-sed -i "s/FRONTEND_HOST/$DB_HOST/g" inventory_params.yaml
-sed -i "s/FRONTEND_HOST/$NGINX_HOST/g" inventory_params.yaml
+sed -i "s/BACKEND_HOST/$BACKEND_HOST/g" inventory_params.yaml
+sed -i "s/DB_HOST/$DB_HOST/g" inventory_params.yaml
+sed -i "s/NGINX_HOST/$NGINX_HOST/g" inventory_params.yaml
 
-sed -i "s/FRONTEND_HOST/$FRONTEND_PORT/g" inventory_params.yaml
-sed -i "s/FRONTEND_HOST/$BACKEND_PORT/g" inventory_params.yaml
-sed -i "s/FRONTEND_HOST/$DB_PORT/g" inventory_params.yaml
-sed -i "s/FRONTEND_HOST/$NGINX_HOST/g" inventory_params.yaml
+sed -i "s/FRONTEND_PORT/$FRONTEND_PORT/g" inventory_params.yaml
+sed -i "s/BACKEND_PORT/$BACKEND_PORT/g" inventory_params.yaml
+sed -i "s/DB_PORT/$DB_PORT/g" inventory_params.yaml
+sed -i "s/NGINX_PORT/$NGINX_HOST/g" inventory_params.yaml
 
 ansible-playbook setup.yaml -i inventory_params.yaml
 ansible-playbook config_2.yaml -i inventory_params.yaml
