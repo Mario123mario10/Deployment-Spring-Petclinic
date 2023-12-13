@@ -91,7 +91,7 @@ echo 'Installing Ansible...'
 
 pip install ansible
 
-echo inventory.yaml > inventory_params.yaml
+cat inventory.yaml > inventory_params.yaml
 
 sed -i "s/FRONTEND_HOST/$FRONTEND_HOST/g" inventory_params.yaml
 sed -i "s/FRONTEND_HOST/$BACKEND_HOST/g" inventory_params.yaml
