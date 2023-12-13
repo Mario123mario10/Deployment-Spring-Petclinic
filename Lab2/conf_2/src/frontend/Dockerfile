@@ -6,4 +6,4 @@ COPY ./ ./
 
 RUN chmod 755 ./frontend.sh
 
-ENTRYPOINT ./frontend.sh 80 ${API_IP} ${API_PORT}; sleep infinity;
+ENTRYPOINT ./frontend.sh ${FRONTEND_PORT} ${API_IP} ${API_PORT}; sleep infinity;
