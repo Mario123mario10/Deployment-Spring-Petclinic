@@ -1,0 +1,20 @@
+- hosts: all
+  tasks:
+  - name: Update apt cache
+    become: true
+    command: sudo apt-get -y update
+
+  - name: Upgrade all packages
+    command: sudo apt-get -y upgrade
+
+  - name: Docker installation
+    command: sudo apt-get -y install docker docker.io
+    
+  - name: Adding user to docker group
+    command: sudo usermod -aG docker {{ ansible_user }}
+    
+  - name: Reset ssh connection
+    meta: reset_connection
+    
+  - name: Creating /petclinic directory
+    command: sudo mkdir /petclinic

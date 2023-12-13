@@ -1,0 +1,24 @@
+all:
+  children:
+    vms:
+      hosts:
+        front_vm:
+          ansible_host: FRONTEND_HOST
+        back_vm:
+          ansible_host: BACKEND_HOST
+
+  vars:  
+    ansible_user: azureuser
+    ansible_ssh_private_key_file: ~/.ssh/wus-pk.pem
+    
+    db_port: DB_PORT
+    db_ip: DB_HOST
+    
+    frontend_port: FRONTEND_PORT
+    frontend_ip: FRONTEND_HOST
+    
+    backend_port: BACKEND_PORT
+    backend_ip: BACKEND_HOST
+    
+    nginx_port: NGINX_PORT
+    nginx_ip: NGINX_HOST

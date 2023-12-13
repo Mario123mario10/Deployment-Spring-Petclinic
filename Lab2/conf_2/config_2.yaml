@@ -20,21 +20,21 @@
 # Backend_write on back_vm
 - hosts: back_vm
   tasks:
-  - name: Copying files for backend_write
+  - name: Copying files for backend
     become: true
     ansible.builtin.copy:
       src: ./src/backend/
-      dest: /petclinic/backend_write/
+      dest: /petclinic/backend/
       
-  - name: Building docker image for backend_write
-    command: docker build -t wus-backend_write /petclinic/backend_write/
+  - name: Building docker image for backend
+    command: docker build -t wus-backend /petclinic/backend_write/
     
-  - name: Starting docker container for backend_write
-    command: docker run -d --name wus-backend_write -p {{ backend_write_port }}:3000 -e DB_MASTER_IP={{ db_ip }} -e DB_MASTER_PORT={{ db_port }} wus-backend_write
+  - name: Starting docker container for backend
+    command: docker run -d --name wus-backend -p {{ backend_port }}:3000 -e DB_MASTER_IP={{ db_ip }} -e DB_MASTER_PORT={{ db_port }} wus-backend
     
   - name: Print backend address and port
     ansible.builtin.debug:
-      msg: Backend available on {{ backend_write_ip }}, port {{ backend_write_port }}
+      msg: Backend available on {{ backend_ip }}, port {{ backend_port }}
       
 
 # Database on back_vm
