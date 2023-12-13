@@ -1,7 +1,7 @@
 - hosts: all
   tasks:
   - name: Stopping docker containers
-    command: docker container stop wus-database wus-frontend wus-backend_write wus-backend wus-database_master wus-database_slave wus-backend_read wus-nginx
+    command: docker container stop wus-database wus-frontend wus-backend-1 wus-backend-2 wus-backend-3 wus-nginx
     ignore_errors: true
     
   - name: Removing docker containers 

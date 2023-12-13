@@ -8,8 +8,8 @@ apt-get -y update
 apt-get -y upgrade
 apt-get -y install openjdk-17-jdk git mariadb-client
 
-mkdir -p /petclinic/backend
-cd /petclinic/backend
+mkdir -p "/petclinic/backend_$API_PORT_WRITE"
+cd "/petclinic/backend_$API_PORT_WRITE"
 
 git clone https://github.com/spring-petclinic/spring-petclinic-rest.git
 cd ./spring-petclinic-rest
