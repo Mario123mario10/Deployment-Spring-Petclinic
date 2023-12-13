@@ -3,10 +3,10 @@
 ## Zespół
 
 ```
-Bartłomiej Krawczyk
-Karol Kasperek
-Mateusz Brzozowski
-Aleksandra Majewska
+Bartosz Kisły
+Mariusz Pakulski
+Jakub Woźniak
+Szymon Łukawski
 ```
 
 ## Sposób odpalania
