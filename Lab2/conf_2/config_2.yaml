@@ -16,6 +16,26 @@
   - name: Print frontend address and port
     ansible.builtin.debug:
       msg: Frontend available on {{ frontend_ip }}, port {{ frontend_port }}
+
+
+# Nginx
+- hosts: nginx_vm
+  tasks:
+  - name: Copying files for nginx
+    become: true
+    ansible.builtin.copy:
+      src: ./nginx/
+      dest: /petclinic/nginx/
+      
+  - name: Building docker image for nginx
+    command: docker build -t wus-nginx /petclinic/nginx/
+    
+  - name: Starting docker container for nginx
+    command: docker run -d --name wus-nginx -p {{ nginx_port }}:3500 -e BACKEND_IP={{ backend_ip }} -e BACKEND_PORT_1={{ backend_port_1 }} -e BACKEND_PORT_2={{ backend_port_2 }} -e BACKEND_PORT_3={{ backend_port_3 }} wus-nginx
+    
+  - name: Print nginx address and port
+    ansible.builtin.debug:
+      msg: Nginx available on {{ nginx_ip }}, port {{ nginx_port }}
       
 # Backend_write on back_vm
 - hosts: back_vm

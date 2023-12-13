@@ -1,7 +1,9 @@
 #!/bin/sh
 
 FRONTEND_PORT=80
-BACKEND_PORT=8080
+BACKEND_PORT_1=5050
+BACKEND_PORT_2=6060
+BACKEND_PORT_3=8080
 DB_PORT=3306
 NGINX_PORT=5000
 
@@ -38,7 +40,7 @@ echo 'Opening ports for the database VM...'
 az vm open-port \
     --resource-group WUS \
     --name petclinic-db  \
-    --port 3306 --priority 1010
+    --port $DB_PORT --priority 1010
 
 echo 'Done.'
 
@@ -58,9 +60,37 @@ echo 'Opening ports for the backend VM...'
 az vm open-port \
     --resource-group WUS \
     --name petclinic-backend  \
-    --port 8080 --priority 1012
+    --port $BACKEND_PORT_1 --priority 1012
+
+az vm open-port \
+    --resource-group WUS \
+    --name petclinic-backend  \
+    --port $BACKEND_PORT_2 --priority 1013
+    
+az vm open-port \
+    --resource-group WUS \
+    --name petclinic-backend  \
+    --port $BACKEND_PORT_3 --priority 1014
 
 echo 'Done.'
+
+# CONFIGURE NGINX
+
+echo 'Creating VM for nginx...'
+
+az vm create --name petclinic-nginx --resource-group WUS \
+    --admin-username azureuser --generate-ssh-keys \
+    --image Ubuntu2204 --vnet-name petclinic-vnet \
+    --subnet petclinic-subnet --private-ip-address 10.0.0.5
+
+echo 'Done.'
+
+echo 'Opening ports for the nginx VM...'
+
+az vm open-port \
+    --resource-group WUS \
+    --name petclinic-nginx  \
+    --port $NGINX_PORT --priority 1012
 
 # CONFIGURE FRONT-END
 
@@ -85,7 +115,7 @@ echo 'Done.'
 FRONTEND_HOST=$(az vm show -g WUS -n petclinic-frontend -d --query [publicIps] --output tsv)
 BACKEND_HOST=$(az vm show -g WUS -n petclinic-backend -d --query [publicIps] --output tsv)
 DB_HOST=$(az vm show -g WUS -n petclinic-db -d --query [publicIps] --output tsv)
-NGINX_HOST="127.0.0.1"
+NGINX_HOST=$(az vm show -g WUS -n petclinic-nginx -d --query [publicIps] --output tsv)
 
 echo 'Installing Ansible...'
 
@@ -101,7 +131,7 @@ sed -i "s/NGINX_HOST/$NGINX_HOST/g" inventory_params.yaml
 sed -i "s/FRONTEND_PORT/$FRONTEND_PORT/g" inventory_params.yaml
 sed -i "s/BACKEND_PORT/$BACKEND_PORT/g" inventory_params.yaml
 sed -i "s/DB_PORT/$DB_PORT/g" inventory_params.yaml
-sed -i "s/NGINX_PORT/$NGINX_HOST/g" inventory_params.yaml
+sed -i "s/NGINX_PORT/$NGINX_PORT/g" inventory_params.yaml
 
 ansible-playbook setup.yaml -i inventory_params.yaml
 ansible-playbook config_2.yaml -i inventory_params.yaml

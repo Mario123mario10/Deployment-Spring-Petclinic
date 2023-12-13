@@ -8,6 +8,8 @@ all:
           ansible_host: BACKEND_HOST
         db_vm:
           ansible_host: DB_HOST
+        nginx_vm:
+          ansible_host: NGINX_HOST
 
   vars:  
     ansible_user: azureuser
