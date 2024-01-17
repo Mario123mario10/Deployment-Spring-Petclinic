@@ -20,7 +20,6 @@ az aks get-credentials \
 kubectl get nodes
 
 # deploy spring-petclinic-cloud
-git clone https://github.com/spring-petclinic/spring-petclinic-cloud
 cd spring-petclinic-cloud/
 
 kubectl apply -f k8s/init-namespace
