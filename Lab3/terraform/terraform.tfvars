@@ -1,18 +1,2 @@
-terraform {
-  required_version = ">=1.0"
-
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~>3.0"
-    }
-    random = {
-      source  = "hashicorp/random"
-      version = "~>3.0"
-    }
-  }
-}
-
-provider "azurerm" {
-  features {}
-}
+aks_service_principal_app_id = "<service_principal_app_id>"
+aks_service_principal_client_secret = "<service_principal_password>"
